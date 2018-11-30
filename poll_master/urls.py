@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+<<<<<<< HEAD
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('time/', views.current_datetime),
     path('', views.home),
+=======
+urlpatterns = [
+    path('admin/', admin.site.urls),
+>>>>>>> 0d785a10cad2fcf89217511b5e544b095318f6d5
 ]

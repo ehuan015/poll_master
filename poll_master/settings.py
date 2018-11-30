@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'polls',
+=======
+>>>>>>> 0d785a10cad2fcf89217511b5e544b095318f6d5
 ]
 
 MIDDLEWARE = [
@@ -55,7 +58,11 @@ ROOT_URLCONF = 'poll_master.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+<<<<<<< HEAD
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
+=======
+        'DIRS': [],
+>>>>>>> 0d785a10cad2fcf89217511b5e544b095318f6d5
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,7 +113,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+<<<<<<< HEAD
 TIME_ZONE = 'US/Pacific'
+=======
+TIME_ZONE = 'UTC'
+>>>>>>> 0d785a10cad2fcf89217511b5e544b095318f6d5
 
 USE_I18N = True
 
