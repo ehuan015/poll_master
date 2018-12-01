@@ -1,5 +1,23 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block custom_css %}
+  <link rel='stylesheet' type='text/css' href="{% static 'css/home_styles.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Welcome to Poll Master!</h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div id="home-content">
+        <h1>PollMaster - Get Started!</h1>
+        <h3>Get the People's Opinion!</h3>
+        <hr>
+        <button type="button" class="btn btn-light btn-lg">Get Started!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
