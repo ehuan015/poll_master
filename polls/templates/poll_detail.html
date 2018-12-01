@@ -2,6 +2,14 @@
 
 {% block content %}
 
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li{% if messages.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
 <h1>{{ poll }}</h1>
 
 <form action="{% url 'polls:vote' poll.id %}" method="post">

@@ -5,15 +5,11 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      {% if error %}
-        <h1>Error!!</h1>
-      {% else %}
-        <ul>
-          {% for choice in poll.choice_set.all %}
-            <li>{{ choice.choice_text }} - {{ choice.votes }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
+      <ul>
+        {% for choice in poll.choice_set.all %}
+          <li>{{ choice.choice_text }} - {{ choice.votes }}</li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 </div>
