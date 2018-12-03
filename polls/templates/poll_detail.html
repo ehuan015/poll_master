@@ -1,28 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container">
 
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li{% if messages.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <h2>{{poll}} - {{poll.num_votes}} votes</h2>
+
+  <form action="{% url 'polls:vote' poll.id %}" method="post">
+    {% csrf_token %}
+    {% for choice in poll.choice_set.all %}
+      <input type="radio"
+             name="choice"
+             id="choice{{ forloop.counter }}"
+             value="{{choice.id}}"/>
+      <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+      <br/>
     {% endfor %}
-  </ul>
-{% endif %}
+    <input class="btn btn-primary mb-2" type="submit" value="Vote" {% if not user_can_vote %}disabled{% endif %}>
+  </form>
 
-<h1>{{ poll }}</h1>
+  {% if not user_can_vote %}
+    {% for choice_dict in results %}
+    <div class="row">
+      <div class="col-sm-6">
+        {{ choice_dict.question_text}}
+        <div class="progress mb-2">
+          <div class="progress-bar" role="progressbar" style="width: {{ choice_dict.percentage }}%;">{{ choice_dict.num_votes }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>Vote to see results!</p>
+  {% endif %}
 
-<form action="{% url 'polls:vote' poll.id %}" method="post">
-  {% csrf_token %}
-  {% for choice in poll.choice_set.all %}
-    <input type="radio"
-           name="choice"
-           id="choice{{ forloop.counter }}"
-           value="{{choice.id}}"/>
-    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
-    <br/>
-  {% endfor %}
-  <input type="submit" value="Vote" {% if not user_can_vote %}disabled{% endif %}>
-</form>
-
+</div>
 {% endblock %}

@@ -11,21 +11,17 @@
         {% for field in form %}
           <div class="form-group">
             {{ field.errors }}
-            {{ field.label_tag }} 
+            {{ field.label_tag }}
             {{ field }}
           </div>
         {% endfor %}
+        {% for choice in poll.choice_set.all %}
+          <p><a href="{% url 'polls:edit_choice' choice.id %}"><i class="far fa-edit"></i></a> {{ choice.choice_text }}</p>
+        {% endfor %}
        <input type="submit" value="submit" class="btn btn-primary">
        <a href="{% url 'polls:add_choice' poll.id %}" class="btn btn-warning">Add Choice</a>
-       <a href="{% url 'polls:delete_poll_confirm' poll.id %}"
-          class='btn btn-danger'>
-          <i class="far fa-trash-alt"></i>Delete Poll
-        </a>
+       <a href="{% url 'polls:delete_poll_confirm' poll.id %}" class='btn btn-danger'><i class="far fa-trash-alt"></i>Delete Poll</a>
       </form>
-      <h3 class='text-center'>Choices</h3>
-      {% for choice in poll.choice_set.all %}
-        <p><a href="{% url 'polls:edit_choice' choice.id %}"><i class="far fa-edit"></i></a> {{ choice.choice_text }}</p>
-      {% endfor %}
     </div>
   </div>
 </div>

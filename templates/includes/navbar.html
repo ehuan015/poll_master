@@ -6,10 +6,14 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link active" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="{% url 'polls:list' %}">Polls</a>
+      <a class="nav-item nav-link" href="{% url 'polls:list' %}">Current</a>
+      {% if request.user.is_authenticated %}
+      <a class="nav-item nav-link" href="{% url 'polls:user_polls' %}">My Polls</a>
+      {% endif %}
     </div>
     <div class="navbar-nav ml-auto">
       {% if request.user.is_authenticated %}
+        <a class="nav-item nav-link" href="{% url 'polls:add' %}">Add <i class="fas fa-plus"></i> </a>
         <a class="nav-item nav-link" href="{% url 'accounts:logout' %}">Logout</a>
       {% else %}
         <a class="nav-item nav-link" href="{% url 'accounts:login' %}">Login</a>

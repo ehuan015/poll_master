@@ -1,7 +1,6 @@
 import datetime
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -18,6 +17,13 @@ def polls_list(request):
     polls = Poll.objects.all()
     context = {'polls': polls}
     return render(request, 'polls_list.html', context)
+
+@login_required
+def user_polls(request):
+    curr_user = request.user
+    polls = Poll.objects.filter(owner=curr_user)
+    context = {'polls': polls}
+    return render(request, 'user_polls.html', context)
 
 @login_required
 def add_poll(request):
@@ -53,7 +59,7 @@ def edit_poll(request, poll_id):
         if form.is_valid():
             form.save()
             messages.success(request,
-                             'Changes made and saved!',
+                             'Changes saved!',
                              extra_tags='alert alert-success alert-dismissible fade show')
             return redirect('polls:list')
     else:
@@ -86,10 +92,7 @@ def add_choice(request, poll_id):
             new_choice = form.save(commit=False)
             new_choice.poll = poll
             new_choice.save()
-            messages.success(request,
-                             'New choice was added!',
-                             extra_tags='alert alert-success alert-dismissible fade show')
-        return redirect('polls:list')
+        return redirect('polls:edit_poll', poll_id=poll_id)
     else:
         form = ChoiceForm()
     return render(request, 'add_choice.html', {'form': form})
@@ -104,10 +107,7 @@ def edit_choice(request, choice_id):
         form = ChoiceForm(request.POST, instance=choice)
         if form.is_valid():
             form.save()
-            messages.success(request,
-                             'Choice change saved!',
-                             extra_tags='alert alert-success alert-dismissible fade show')
-        return redirect('polls:list')
+        return redirect('polls:edit_poll', poll_id=choice.poll.id)
     else:
         form = ChoiceForm(instance=choice)
     return render(request, 'add_choice.html', {'form': form, 'edit_mode': True, 'choice': choice})
@@ -119,11 +119,9 @@ def delete_choice(request, choice_id):
     if request.user != poll.owner:
         return redirect('/')
     if request.method == "POST":
+        curr_poll = choice.poll.id
         choice.delete()
-        messages.success(request,
-                         'Choice change saved!',
-                         extra_tags='alert alert-success alert-dismissible fade show')
-        return redirect('polls:list')
+        return redirect('polls:edit_poll', poll_id=curr_poll)
     return render(request, 'delete_choice_confirm.html', {'choice': choice})
 
 @login_required
@@ -133,22 +131,25 @@ def poll_detail(request, poll_id):
     """
     #poll = Poll.objects.get(id=poll_id)
     poll = get_object_or_404(Poll, id=poll_id)
-    user_can_vote = poll.user_can_vote()
-    context = {'poll': poll, 'user_can_vote': user_can_vote}
+    user_can_vote = poll.user_can_vote(request.user)
+    results = poll.get_results_dict()
+    context = {'poll': poll, 'user_can_vote': user_can_vote, 'results': results}
     return render(request, 'poll_detail.html', context)
 
 @login_required
 def poll_vote(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
+
     if not poll.user_can_vote(request.user):
         messages.error(request, 'User already voted.')
-        return HttpResponseRedirect(reverse("polls:detail", args=(poll_id,)))
+        return redirect('polls:detail', poll_id=poll_id)
+
     choice_id = request.POST.get('choice')
     if choice_id:
-        choice = Choice.objects.get(id=poll_id)
+        choice = Choice.objects.get(id=choice_id)
         new_vote = Vote(user=request.user, poll=poll, choice=choice)
         new_vote.save()
     else:
         messages.error(request, 'No choice was made.')
-        return HttpResponseRedirect(reverse("polls:detail", args=(poll_id,)))
-    return render(request, 'poll_results.html', {'poll': poll})
+        return redirect('polls:detail', poll_id=poll_id)
+    return redirect('polls:detail', poll_id=poll_id)
