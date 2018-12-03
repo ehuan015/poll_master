@@ -22,7 +22,7 @@
     <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
     <br/>
   {% endfor %}
-  <input type="submit" value="Vote">
+  <input type="submit" value="Vote" {% if not user_can_vote %}disabled{% endif %}>
 </form>
 
 {% endblock %}
